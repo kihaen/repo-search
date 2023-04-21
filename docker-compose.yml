@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: ./
+      target: runner
+    volumes:
+      - .:/repo-search
+    command: npm run dev && npm run dev:docker
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+  backend:
+    image: "gcr.io/hiring-278615/reposerver"
+    ports:
+      - "8080:8080"
+  
