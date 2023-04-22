@@ -1,3 +1,28 @@
+
+.header {
+  width: 100%;
+  height: 4.5rem;
+  overflow: hidden;
+  border: 1px var(--chakra-colors-gray-200) solid;
+}
+
+.header a{
+  display: inline-block;
+}
+.header .navigation{
+  display: inline-block;
+  padding: 20px;
+  width: fit-content;
+}
+.layout{
+  padding: 0 2rem;
+}
+
+.search{
+  margin: 20px 0px;
+}
+
+/* Vercel Defauls  */
 .main {
   display: flex;
   flex-direction: column;
