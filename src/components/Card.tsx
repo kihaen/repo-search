@@ -1,5 +1,5 @@
-import { Card, CardHeader, CardBody, Heading, Text, Button, HStack,Box, Flex, Tag, TagLabel, TagRightIcon} from "@chakra-ui/react";
-import { StarIcon } from '@chakra-ui/icons';
+import { Card, CardHeader, CardBody, Heading, Text, Button, HStack,Box, Flex, Tag, TagLabel, TagRightIcon, IconButton} from "@chakra-ui/react";
+import { StarIcon, CloseIcon } from '@chakra-ui/icons';
 import Link from "next/link";
 
 type props = {
@@ -7,11 +7,12 @@ type props = {
     description : string, 
     url : string, 
     stars : number, 
-    callBack:()=>{}
+    callBack:()=>{},
+    showDelete? : boolean
 }
 
 const CardComponent = (props : props) : JSX.Element=>{
-    const {name, description, url, stars, callBack} = props;
+    const {name, description, url, stars, callBack, showDelete} = props;
     return(
         <Card>
             <CardHeader>
@@ -26,7 +27,15 @@ const CardComponent = (props : props) : JSX.Element=>{
                         <TagLabel>{stars || 0}</TagLabel>
                         <TagRightIcon as={StarIcon} />
                     </Tag>
-                    <Button onClick={()=>{callBack()}} >Favorite</Button>
+                    {!showDelete && <Button onClick={()=>{callBack()}} >Favorite</Button>}
+                    {showDelete && 
+                        <IconButton
+                        colorScheme='red'
+                        aria-label='delete favorite'
+                        onClick={()=>{callBack()}}
+                        size='sm'
+                        icon={<CloseIcon />}
+                        />}
                 </HStack>
             </Flex>
             </CardHeader>

@@ -3,7 +3,7 @@ import Layout from '@/components/Layout'
 import FavoriteCard from '@/components/FavoriteCard'
 import { backendAPI } from '@/common/Constants'
 import { useEffect, useState } from 'react'
-import type { Repository } from "@/components/Search";
+import { Stack } from '@chakra-ui/react'
 
 export type LocalRepo = {
   id : string,
@@ -43,6 +43,7 @@ const favorite = ()=> {
     <>
       <Header />
       <Layout>
+        <Stack spacing={3}>
         { favData && 
               <>
                   { favData?.repos && favData?.repos?.map((item)=>{
@@ -52,6 +53,7 @@ const favorite = ()=> {
                   })}
               </>
         }
+        </Stack>
       </Layout>
     </>
   )

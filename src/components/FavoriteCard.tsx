@@ -28,11 +28,12 @@ const FavoriteCard = (props : LocalRepo): JSX.Element=>{
         // catch(error){
         //     console.log(error)
         // }
+        console.log('delete')
     }
 
     const {fullName, createdAt, stargazersCount, url} = props;
     return(
-        <CardComponent name={fullName} description={createdAt} url={url} stars={stargazersCount} callBack={handleRemoveFavorite} />
+        <CardComponent name={fullName} description={createdAt} url={url} stars={stargazersCount} callBack={handleRemoveFavorite} showDelete />
     )
 }
 
