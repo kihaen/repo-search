@@ -1,4 +1,5 @@
-import { Card, CardHeader, CardBody, Heading, Text, Button, HStack,Box, Flex, Tag, TagLabel, TagRightIcon, IconButton} from "@chakra-ui/react";
+import {useState} from 'react';
+import { Card, CardHeader, CardBody, Heading, Text, Button, HStack,Box, Flex, Tag, TagLabel, TagRightIcon, TagLeftIcon, IconButton} from "@chakra-ui/react";
 import { StarIcon, CloseIcon } from '@chakra-ui/icons';
 import Link from "next/link";
 
@@ -12,6 +13,7 @@ type props = {
 }
 
 const CardComponent = (props : props) : JSX.Element=>{
+    const [isFavorited, disableFav] = useState(false);
     const {name, description, url, stars, callBack, showDelete} = props;
     return(
         <Card>
@@ -24,10 +26,19 @@ const CardComponent = (props : props) : JSX.Element=>{
                 </Flex>
                 <HStack spacing={4}>
                     <Tag size={'lg'} variant='outline' colorScheme='blue'>
+                        <TagLeftIcon as={StarIcon} />
                         <TagLabel>{stars || 0}</TagLabel>
-                        <TagRightIcon as={StarIcon} />
                     </Tag>
-                    {!showDelete && <Button onClick={()=>{callBack()}} >Favorite</Button>}
+                    {!showDelete && (
+                        <>
+                        { !isFavorited ? <Button size="sm" onClick={()=>{callBack(); disableFav(true)}} >Favorite</Button> : 
+                            <Tag size={'lg'} variant='outline' colorScheme='green'>
+                                <TagLeftIcon as={StarIcon} />
+                                <TagLabel>{'Saved!'}</TagLabel>
+                            </Tag>
+                        }
+                        </>
+                    )}
                     {showDelete && 
                         <IconButton
                         colorScheme='red'

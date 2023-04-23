@@ -88,10 +88,10 @@ const Search = () : JSX.Element =>{
         </InputGroup>
         { dataset && 
             <>
-                { dataset?.items && dataset?.items?.map((item)=>{
+                { dataset?.items && dataset?.items?.map((item, index)=>{
                     const {name, description, stargazers_count, html_url} = item;
                     return(
-                        <CardComponent name={name} description={description} url={html_url} stars={stargazers_count} callBack={()=>handleFavorite(item)} />
+                        <CardComponent key={index} name={name} description={description} url={html_url} stars={stargazers_count} callBack={()=>handleFavorite(item)} />
                     )
                 })}
             </>

@@ -63,10 +63,10 @@ const favorite = ()=> {
         <Stack spacing={3}>
         { favData && 
               <>
-                  { favData?.repos && favData?.repos?.map((item)=>{
+                  { favData?.repos && favData?.repos?.map((item, index)=>{
                       const {fullName, createdAt, stargazersCount, url, id} = item;
                       return(
-                        <CardComponent name={fullName} description={createdAt} url={url} stars={stargazersCount} callBack={()=> handleRemoveFavorite(id)} showDelete />
+                        <CardComponent key={index} name={fullName} description={createdAt} url={url} stars={stargazersCount} callBack={()=> handleRemoveFavorite(id)} showDelete />
                       )
                   })}
               </>
