@@ -18,38 +18,20 @@ type responseData = {
   repos? : Array<LocalRepo>
 }
 
-const favorite = ()=> {
+type props = {
+  data : responseData,
+  invalidate : ()=>{},
+}
 
-  const [favData, setFav] = useState<responseData>({})
-
-  useEffect(()=>{
-      fetchFavs()
-  },[])
+const favorite = (props : props)=> {
+  const {data, invalidate} = props;
 
   const handleRemoveFavorite = async(id : string) =>{
     try{
         const response = await fetch(backendAPI + `/repo/${id}`, {
             method : 'DELETE',
         })
-        invalidateData()
-    }
-    catch(error){
-        console.log(error)
-    }
-  }
-
-  const invalidateData = ()=> {
-    setFav({});
-    fetchFavs()
-  }
-
-  const fetchFavs = async() : Promise<void> =>{
-    try{
-        const response = await fetch( backendAPI + `/repo/`, {
-            method: 'GET',
-        });
-        const result = await response.json()
-        setFav(result)
+        invalidate()
     }
     catch(error){
         console.log(error)
@@ -58,12 +40,11 @@ const favorite = ()=> {
 
   return (
     <>
-      <Header />
       <Layout>
         <Stack spacing={3}>
-        { favData && 
+        { data && 
               <>
-                  { favData?.repos && favData?.repos?.map((item, index)=>{
+                  { data?.repos && data?.repos?.map((item, index)=>{
                       const {fullName, createdAt, stargazersCount, url, id} = item;
                       return(
                         <CardComponent key={index} name={fullName} description={createdAt} url={url} stars={stargazersCount} callBack={()=> handleRemoveFavorite(id)} showDelete />

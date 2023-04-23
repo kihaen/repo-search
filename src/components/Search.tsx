@@ -1,10 +1,11 @@
-import React, {useState} from "react";
+import React, {SyntheticEvent, useState, useEffect} from "react";
 import styles from '@/styles/Home.module.css'
-import { Input, InputGroup, InputLeftElement, Stack} from "@chakra-ui/react";
+import { Stack} from "@chakra-ui/react";
 import { backendAPI } from "@/common/Constants";
-import { SearchIcon } from '@chakra-ui/icons';
 import { githubAPI } from "@/common/Constants";
-import CardComponent from "./Card";
+import { AutoComplete } from "antd";
+import { StarIcon } from "@chakra-ui/icons";
+import Favorite from "@/pages/favorite";
 // import GithubCard from "./GithubCard";
 
 export type Repository = {
@@ -23,33 +24,102 @@ type responseData = {
     items? : Array<Repository>
 }
 
+export type LocalRepo = {
+    id : string,
+    fullName : string,
+    createdAt : string,
+    stargazersCount : number,
+    language : string,
+    url : string
+  }
+  
+  type responseLocalData = {
+    repos? : Array<LocalRepo>
+  }
+
 const Search = () : JSX.Element =>{
 
     const [searchedInput, handleChange] = useState('');
-    const [dataset, changeData] = useState<responseData>({});
-    const [perPage, setPage] = useState(10);
+    const [dataset, changeData] = useState<{value: string, label : JSX.Element}[]>([]);
+    const [dataRef, setDataRef] = useState<{[key : string] : Repository}>({})
+    const [favData, setFav] = useState<responseLocalData>({})
+    const perPage = 10;
 
-    const gatherContent = async(search : string) : Promise<void> =>{
+    const timeoutRef : {current : any} = React.useRef()
+
+    useEffect(()=>{
+        fetchFavs()
+    },[])
+
+    const fetchGithubContent = async(search : string) : Promise<void> =>{
         try{
+            let dataMap : {[key: string]: Repository} = {}
             const response = await fetch(githubAPI + `/search/repositories?q=${search}&per_page=${perPage}`, {
                 method: 'GET',
             });
             const result = await response.json()
-            changeData(result)
+            if(result){
+                result?.items?.forEach((item : Repository) => {
+                    dataMap[item.name] = item
+                })
+            }
+            setDataRef(dataMap)
+            const parsedData = mapDataToOption(result)
+            changeData(parsedData)
         }
         catch(error){
             console.log(error)
         }
     }
 
-    const handleKeypress = (e:React.KeyboardEvent)=>{
-        if(e.key == "Enter"){
-            gatherContent(searchedInput)
-        }
+    const invalidateData = async(): Promise<void> => {
+        setFav({});
+        fetchFavs()
     }
 
-    const handleFavorite = async(item : Repository) =>{
-        const { id, full_name, created_at, stargazers_count, language, url} = item;
+    const fetchFavs = async() : Promise<void> =>{
+    try{
+        const response = await fetch( backendAPI + `/repo/`, {
+            method: 'GET',
+        });
+        const result = await response.json()
+        setFav(result)
+    }
+    catch(error){
+        console.log(error)
+    }
+    }
+
+    const renderItem = (item : Repository) => ({
+        value: item.name,
+        label: (
+          <div className={styles.searchItem}>
+            {item.name} | {item.description} | <span className="search-language">{item.language}</span>
+            <span>
+              <StarIcon /> {item.stargazers_count}
+            </span>
+          </div>
+        ),
+    });
+
+
+    const mapDataToOption = (data : responseData): {value: string, label : JSX.Element}[] =>{
+        const Options = data?.items?.map((item )=>{
+            return renderItem(item)
+        }) || []
+        return Options;
+    } 
+
+    const handleSearchChange = (value : string)=>{
+        handleChange(value)
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = setTimeout(() => {
+            fetchGithubContent(value)
+        }, 300);
+    }
+
+    const handleFavorite = async(id : string) =>{
+        const { full_name, created_at, stargazers_count, language, url} = dataRef[id];
         try{
             const bodyData = JSON.stringify({
                 id : String(id),
@@ -66,6 +136,7 @@ const Search = () : JSX.Element =>{
                 },
                 body : bodyData
             })
+            invalidateData()
         }
         catch(error){
             console.log(error)
@@ -73,29 +144,15 @@ const Search = () : JSX.Element =>{
     }
 
     return(
-        <Stack spacing={3}>
-        <InputGroup className={styles.search} >
-            <InputLeftElement
-            pointerEvents='none'
-            children={<SearchIcon color='gray.300' />}
-            />
-            <Input 
-            onChange={(e)=> handleChange(e.target.value)}
+        <Stack className={styles.search} spacing={3}>
+        <AutoComplete 
+            value = {searchedInput}
+            onChange={(text) => handleSearchChange(text)}
+            options={dataset}
             placeholder="Search Github Repositories"
-            onKeyDown={(e)=>{(handleKeypress(e))}}
-            value ={searchedInput}
-            />
-        </InputGroup>
-        { dataset && 
-            <>
-                { dataset?.items && dataset?.items?.map((item, index)=>{
-                    const {name, description, stargazers_count, html_url} = item;
-                    return(
-                        <CardComponent key={index} name={name} description={description} url={html_url} stars={stargazers_count} callBack={()=>handleFavorite(item)} />
-                    )
-                })}
-            </>
-        }
+            onSelect={(id)=> handleFavorite(id)}
+        />
+        <Favorite data={favData} invalidate={()=> invalidateData()}/>
         </Stack>
     )
 }

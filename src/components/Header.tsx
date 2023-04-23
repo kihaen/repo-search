@@ -13,7 +13,7 @@ const Header = () : JSX.Element =>{
         return(
             <div className={styles.navigation}>
                 <Link href="/" data-active={isActive('/')}>
-                    Github Repository Searcher
+                    Github Repository Favorites
                 </Link>
             </div>
         )
@@ -22,9 +22,6 @@ const Header = () : JSX.Element =>{
     const generateRighttNav = (): JSX.Element =>{
         return(
             <div className={styles.navigation}>
-                <Link href="/favorite">
-                    Favorite
-                </Link>
             </div>
         )
     }

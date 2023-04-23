@@ -17,10 +17,24 @@
 .layout{
   padding: 0 2rem;
   margin-bottom: 30px;
+  min-height: 500px;
+  height: fit-content;
 }
 
 .search{
   margin: 20px 0px;
+}
+
+.home{
+  margin: 20px 0px;
+}
+
+.searchItem{
+  display: flex;
+  justify-content: space-between;
+}
+.searchItem .search-language{
+  color: red;
 }
 
 /* Vercel Defauls  */

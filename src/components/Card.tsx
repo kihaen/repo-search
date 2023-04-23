@@ -52,7 +52,7 @@ const CardComponent = (props : props) : JSX.Element=>{
             </CardHeader>
             <CardBody>
                 <Text>
-                    {description}
+                    Created at : {description}
                 </Text>
             </CardBody>
         </Card>
