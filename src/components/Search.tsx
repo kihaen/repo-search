@@ -1,10 +1,11 @@
 import React, {useState} from "react";
-import Link from "next/link";
 import styles from '@/styles/Home.module.css'
 import { Input, InputGroup, InputLeftElement, Stack} from "@chakra-ui/react";
+import { backendAPI } from "@/common/Constants";
 import { SearchIcon } from '@chakra-ui/icons';
 import { githubAPI } from "@/common/Constants";
-import GithubCard from "./GithubCard";
+import CardComponent from "./Card";
+// import GithubCard from "./GithubCard";
 
 export type Repository = {
     id : number,
@@ -47,6 +48,30 @@ const Search = () : JSX.Element =>{
         }
     }
 
+    const handleFavorite = async(item : Repository) =>{
+        const { id, full_name, created_at, stargazers_count, language, url} = item;
+        try{
+            const bodyData = JSON.stringify({
+                id : String(id),
+                fullName : full_name,
+                createdAt : created_at,
+                stargazersCount : stargazers_count,
+                language,
+                url, 
+            });
+            const response = await fetch(backendAPI + '/repo/', {
+                method : 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body : bodyData
+            })
+        }
+        catch(error){
+            console.log(error)
+        }
+    }
+
     return(
         <Stack spacing={3}>
         <InputGroup className={styles.search} >
@@ -64,8 +89,9 @@ const Search = () : JSX.Element =>{
         { dataset && 
             <>
                 { dataset?.items && dataset?.items?.map((item)=>{
+                    const {name, description, stargazers_count, html_url} = item;
                     return(
-                        <GithubCard {...item} />
+                        <CardComponent name={name} description={description} url={html_url} stars={stargazers_count} callBack={()=>handleFavorite(item)} />
                     )
                 })}
             </>

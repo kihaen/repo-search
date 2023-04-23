@@ -1,6 +1,6 @@
 import Header from '@/components/Header'
 import Layout from '@/components/Layout'
-import FavoriteCard from '@/components/FavoriteCard'
+import CardComponent from '@/components/Card'
 import { backendAPI } from '@/common/Constants'
 import { useEffect, useState } from 'react'
 import { Stack } from '@chakra-ui/react'
@@ -26,6 +26,23 @@ const favorite = ()=> {
       fetchFavs()
   },[])
 
+  const handleRemoveFavorite = async(id : string) =>{
+    try{
+        const response = await fetch(backendAPI + `/repo/${id}`, {
+            method : 'DELETE',
+        })
+        invalidateData()
+    }
+    catch(error){
+        console.log(error)
+    }
+  }
+
+  const invalidateData = ()=> {
+    setFav({});
+    fetchFavs()
+  }
+
   const fetchFavs = async() : Promise<void> =>{
     try{
         const response = await fetch( backendAPI + `/repo/`, {
@@ -47,8 +64,9 @@ const favorite = ()=> {
         { favData && 
               <>
                   { favData?.repos && favData?.repos?.map((item)=>{
+                      const {fullName, createdAt, stargazersCount, url, id} = item;
                       return(
-                          <FavoriteCard {...item} />
+                        <CardComponent name={fullName} description={createdAt} url={url} stars={stargazersCount} callBack={()=> handleRemoveFavorite(id)} showDelete />
                       )
                   })}
               </>
