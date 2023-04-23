@@ -1,12 +1,11 @@
-import React, {SyntheticEvent, useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import styles from '@/styles/Home.module.css'
-import { Stack} from "@chakra-ui/react";
+import { Container, Stack} from "@chakra-ui/react";
 import { backendAPI } from "@/common/Constants";
 import { githubAPI } from "@/common/Constants";
 import { AutoComplete } from "antd";
 import { StarIcon } from "@chakra-ui/icons";
 import Favorite from "@/pages/favorite";
-// import GithubCard from "./GithubCard";
 
 export type Repository = {
     id : number,
@@ -37,7 +36,7 @@ export type LocalRepo = {
     repos? : Array<LocalRepo>
   }
 
-const Search = () : JSX.Element =>{
+const SearchGithub = () : JSX.Element =>{
 
     const [searchedInput, handleChange] = useState('');
     const [dataset, changeData] = useState<{value: string, label : JSX.Element}[]>([]);
@@ -91,6 +90,7 @@ const Search = () : JSX.Element =>{
     }
 
     const renderItem = (item : Repository) => ({
+        key : item.id,
         value: item.name,
         label: (
           <div className={styles.searchItem}>
@@ -125,7 +125,7 @@ const Search = () : JSX.Element =>{
                 id : String(id),
                 fullName : full_name,
                 createdAt : created_at,
-                stargazersCount : stargazers_count,
+                stargazersCount : Number(stargazers_count),
                 language,
                 url, 
             });
@@ -144,8 +144,11 @@ const Search = () : JSX.Element =>{
     }
 
     return(
-        <Stack className={styles.search} spacing={3}>
+        <Container maxW='8xl' width='80rem'>
+        <Stack spacing={3}>
         <AutoComplete 
+            size="large"
+            className={styles.search}
             value = {searchedInput}
             onChange={(text) => handleSearchChange(text)}
             options={dataset}
@@ -154,7 +157,8 @@ const Search = () : JSX.Element =>{
         />
         <Favorite data={favData} invalidate={()=> invalidateData()}/>
         </Stack>
+        </Container>
     )
 }
 
-export default Search;
+export default SearchGithub;

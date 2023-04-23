@@ -1,5 +1,5 @@
 import React, {useState} from "react"
-import type { Repository } from "./Search";
+import type { Repository } from "./SearchGithub";
 import { backendAPI } from "@/common/Constants";
 import CardComponent from "./Card";
 
