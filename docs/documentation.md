@@ -39,10 +39,7 @@ This data is then passed on to the favorites compoenet.
 
 ## The Favorites Component.
 
-The favorites component has a significant role in parsing the data, that it receives through its props.
-
 This component has the following responsibilites :
-- Parse the incoming data, including substituting the isoString in createdAt to a Date Object.
 - Handling the Sorting of the favorited data, even when fresh data is provided
 - Providing a Menu of options for sorting, keeping it scalable to other possible categories.
 - Allowing the sorting to happen when the selection of order and category is made, no matter which order.

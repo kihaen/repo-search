@@ -58,8 +58,8 @@ const Favorite = (props : props)=> {
           </MenuButton>
           <MenuList minWidth='240px'>
             <MenuOptionGroup defaultValue={defaultSort} title='Order' type='radio' onChange={(value)=> {setSortOrder(value); handleSortSelect(sortByCategory, value, dataArray)}}>
-              <MenuItemOption value='asc'>Ascending</MenuItemOption>
-              <MenuItemOption value='desc'>Descending</MenuItemOption>
+              <MenuItemOption value='asc' role='click-asc'>Ascending</MenuItemOption>
+              <MenuItemOption value='desc' role='click-dsc'>Descending</MenuItemOption>
             </MenuOptionGroup>
             <MenuDivider />
             <MenuOptionGroup title='Category' type='radio' value ={sortByCategory} onChange={(value)=>{setSortCategory(value); handleSortSelect(value, sortByOrder, dataArray)}}>
@@ -80,7 +80,7 @@ const Favorite = (props : props)=> {
             </>
           :
           <div className={styles.empty}>
-            <Text size={'lg'}>Favorites List is empty... Try Searching for your favorite repositories</Text>
+            <Text size={'lg'} role="favs-empty-descript">Favorites List is empty... Try Searching for your favorite repositories</Text>
           </div>
         }
         </Stack>

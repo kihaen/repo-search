@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "dev:docker": "docker run -p 8080:8080 gcr.io/hiring-278615/reposerver:v1.1",
-    "test": "jest --watch --env=jsdom"
+    "test": "jest --watch --env=jsdom",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.18",

@@ -39,7 +39,7 @@ const CardComponent = (props : props) : JSX.Element=>{
             </Flex>
             </CardHeader>
             <CardBody>
-                <Text>
+                <Text role="card-description">
                     Created At : {description}
                 </Text>
             </CardBody>

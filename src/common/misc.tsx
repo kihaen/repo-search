@@ -24,7 +24,7 @@ const renderItem = (item : Repository) => ({
     label: (
       <div className={styles.searchItem}>
         {item.name} | {item.description} | <span className="search-language">{item.language}</span>
-        <span>
+        <span role="starcount">
           <StarIcon /> {item.stargazers_count}
         </span>
       </div>

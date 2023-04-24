@@ -5,7 +5,7 @@ import { fetchGithubContent, addFavorite, fetchFavs } from "@/common/apiClient";
 import {Repository, ResponseLocalData} from "@/common/Types"
 import { AutoComplete } from "antd";
 import { useToast } from '@chakra-ui/react'
-import Favorite from "@/components/favorite";
+import Favorite from "@/components/Favorite";
 import { createDataRef, mapDataToOption } from "@/common/misc";
 
 const SearchGithub = () : JSX.Element =>{
