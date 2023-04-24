@@ -16,7 +16,7 @@ const CardComponent = (props : props) : JSX.Element=>{
     const [isFavorited, disableFav] = useState(false);
     const {name, description, url, stars, callBack, showDelete} = props;
     return(
-        <Card>
+        <Card minW={"-moz-fit-content"}>
             <CardHeader>
             <Flex>
                 <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -52,7 +52,7 @@ const CardComponent = (props : props) : JSX.Element=>{
             </CardHeader>
             <CardBody>
                 <Text>
-                    Created at : {description}
+                    Created At : {description}
                 </Text>
             </CardBody>
         </Card>

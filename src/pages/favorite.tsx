@@ -1,14 +1,14 @@
 import Layout from '@/components/Layout'
 import CardComponent from '@/components/Card'
 import { backendAPI } from '@/common/Constants'
-import { Stack, Menu, MenuButton,  Button,MenuList, MenuOptionGroup, MenuItemOption, MenuDivider, Select} from '@chakra-ui/react'
+import { Stack, Menu, MenuButton,  Button,MenuList, MenuOptionGroup, MenuItemOption, MenuDivider, Text} from '@chakra-ui/react'
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
 
 export type LocalRepo = {
   id : string,
   fullName : string,
-  createdAt : string,
+  createdAt : string | Date,
   stargazersCount : number,
   language : string,
   url : string
@@ -35,11 +35,11 @@ const favorite = (props : props)=> {
 
   useEffect(()=>{
     if(!setSortCategory){ // if we are not sorting by any category, just update regularly
-      setDataArray(data?.repos)
+      setDataArray(data?.repos?.map((obj)=> ({...obj, createdAt : new Date(obj.createdAt)})))
     }
     else{ // This is to keep the sort order consistent even when data updates
       handleSortSelect(sortByCategory, sortByOrder, data?.repos)
-      setDataArray(data?.repos)
+      setDataArray(data?.repos?.map((obj)=> ({...obj, createdAt : new Date(obj.createdAt)})))
     }
     
   },[data])
@@ -49,6 +49,7 @@ const favorite = (props : props)=> {
         const response = await fetch(backendAPI + `/repo/${id}`, {
             method : 'DELETE',
         })
+        // removing favorite then callback to parent function to invalidate dataset causing refresh
         invalidate()
     }
     catch(error){
@@ -70,14 +71,13 @@ const favorite = (props : props)=> {
 
   const sortByDate = (direction : string | string[], data? : LocalRepo[]) =>{ //  Data passthrough for when dataArray is not current
     let localArray  = data ?  data : dataArray;
-    const sorted = localArray?.map(obj => { return { ...obj, createdAt: new Date(obj.createdAt) } })
     if(direction === 'desc'){
-      sorted?.sort((a, b) => {return +b.createdAt - +a.createdAt})
+      localArray?.sort((a, b) => {return +b.createdAt - +a.createdAt})
     }
     else{
-      sorted?.sort((a, b) => {return +a.createdAt - +b.createdAt})
+      localArray?.sort((a, b) => {return +a.createdAt - +b.createdAt})
     }
-    const final = sorted?.map(obj => { return { ...obj, createdAt: obj.createdAt.toString()} })
+    const final = localArray?.map(obj => { return { ...obj, createdAt: obj.createdAt} })
     setDataArray(final)
   }
 
@@ -114,15 +114,19 @@ const favorite = (props : props)=> {
           </MenuList>
         </Menu>
         <Stack className={styles.menu} spacing={3}>
-        { dataArray && 
+        { dataArray && dataArray?.length > 0 ?
             <>
                 { dataArray?.map((item, index)=>{
                     const {fullName, createdAt, stargazersCount, url, id} = item;
                     return(
-                      <CardComponent key={index} name={fullName} description={createdAt} url={url} stars={stargazersCount} callBack={()=> handleRemoveFavorite(id)} showDelete />
+                      <CardComponent key={index} name={fullName} description={createdAt.toString()} url={url} stars={stargazersCount} callBack={()=> handleRemoveFavorite(id)} showDelete />
                     )
                 })}
             </>
+          :
+          <div className={styles.empty}>
+            <Text size={'lg'}>Favorites List is empty... Try Searching for your favorite repositories</Text>
+          </div>
         }
         </Stack>
       </Layout>

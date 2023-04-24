@@ -5,6 +5,7 @@ import { backendAPI } from "@/common/Constants";
 import { githubAPI } from "@/common/Constants";
 import { AutoComplete } from "antd";
 import { StarIcon } from "@chakra-ui/icons";
+import { useToast } from '@chakra-ui/react'
 import Favorite from "@/pages/favorite";
 
 export type Repository = {
@@ -26,7 +27,7 @@ type responseData = {
 export type LocalRepo = {
     id : string,
     fullName : string,
-    createdAt : string,
+    createdAt : string | Date,
     stargazersCount : number,
     language : string,
     url : string
@@ -45,6 +46,7 @@ const SearchGithub = () : JSX.Element =>{
     const perPage = 10;
 
     const timeoutRef : {current : any} = React.useRef()
+    const toast = useToast()
 
     useEffect(()=>{
         fetchFavs()
@@ -136,6 +138,16 @@ const SearchGithub = () : JSX.Element =>{
                 },
                 body : bodyData
             })
+            if(response?.statusText === 'Conflict'){
+                toast({
+                    position : 'top',
+                    title: 'Conflict',
+                    description: "The repository already exists on your favorite list",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                  })
+            }
             invalidateData()
         }
         catch(error){
@@ -144,7 +156,7 @@ const SearchGithub = () : JSX.Element =>{
     }
 
     return(
-        <Container maxW='8xl' width='80rem'>
+        <Container maxW='8xl' minW="xl" width='80vw'>
         <Stack spacing={3}>
         <AutoComplete 
             size="large"
