@@ -45,6 +45,17 @@ This component has the following responsibilites :
 - Allowing the sorting to happen when the selection of order and category is made, no matter which order.
 - Handling the `DELETE /repo/[repoID]` end point.
 
+## Seperation of Logic
+
+Parsing functions that for example creates JSX options for the autocomplete is imported from the misc.tsx file within the /common folder
+
+Types are universally imported from the same /common folder
+
+## Tests 
+
+All tests are located within the root __tests__ folder, 
+The tests are written in Jest and React Testing Library.
+
 
 
 

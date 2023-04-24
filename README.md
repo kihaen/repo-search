@@ -35,12 +35,14 @@ to run tests:
 ```bash
 npm run test
 
+npm run test:coverage
+
 ```
 
 ### Running the Application
 
 ```
-$ docker run -p 3000:3000 kihaen/repo-search
+$ docker run -p 3000:3000 kihaen/repo-search:latest
 ```
 the image is available via dockers repository as well.
 
@@ -55,3 +57,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ```
 $ docker run -p 8080:8080 gcr.io/hiring-278615/reposerver:v1.1
 ```
+
+### More Documentation!
+
+There is more context to the design choices and folder structure iwthin in the /docs folder.
