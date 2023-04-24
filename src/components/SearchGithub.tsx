@@ -6,7 +6,7 @@ import { githubAPI } from "@/common/Constants";
 import { AutoComplete } from "antd";
 import { StarIcon } from "@chakra-ui/icons";
 import { useToast } from '@chakra-ui/react'
-import Favorite from "@/pages/favorite";
+import Favorite from "@/components/favorite";
 
 export type Repository = {
     id : number,
@@ -40,7 +40,7 @@ export type LocalRepo = {
 const SearchGithub = () : JSX.Element =>{
 
     const [searchedInput, handleChange] = useState('');
-    const [dataset, changeData] = useState<{value: string, label : JSX.Element}[]>([]);
+    const [dataset, changeData] = useState<{value: number, label : JSX.Element}[]>([]);
     const [dataRef, setDataRef] = useState<{[key : string] : Repository}>({})
     const [favData, setFav] = useState<responseLocalData>({})
     const perPage = 10;
@@ -61,7 +61,7 @@ const SearchGithub = () : JSX.Element =>{
             const result = await response.json()
             if(result){
                 result?.items?.forEach((item : Repository) => {
-                    dataMap[item.name] = item
+                    dataMap[item.id] = item
                 })
             }
             setDataRef(dataMap)
@@ -74,7 +74,6 @@ const SearchGithub = () : JSX.Element =>{
     }
 
     const invalidateData = async(): Promise<void> => {
-        setFav({});
         fetchFavs()
     }
 
@@ -93,7 +92,7 @@ const SearchGithub = () : JSX.Element =>{
 
     const renderItem = (item : Repository) => ({
         key : item.id,
-        value: item.name,
+        value: item.id,
         label: (
           <div className={styles.searchItem}>
             {item.name} | {item.description} | <span className="search-language">{item.language}</span>
@@ -105,7 +104,7 @@ const SearchGithub = () : JSX.Element =>{
     });
 
 
-    const mapDataToOption = (data : responseData): {value: string, label : JSX.Element}[] =>{
+    const mapDataToOption = (data : responseData): {value: number, label : JSX.Element}[] =>{
         const Options = data?.items?.map((item )=>{
             return renderItem(item)
         }) || []
@@ -162,7 +161,7 @@ const SearchGithub = () : JSX.Element =>{
             size="large"
             className={styles.search}
             value = {searchedInput}
-            onChange={(text) => handleSearchChange(text)}
+            onSearch={(text) => handleSearchChange(text)}
             options={dataset}
             placeholder="Search Github Repositories"
             onSelect={(id)=> handleFavorite(id)}

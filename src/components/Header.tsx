@@ -1,18 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { useRouter } from 'next/router';
 import styles from '@/styles/Home.module.css'
 
 const Header = () : JSX.Element =>{
-    const isActive : (path : string) => boolean = (path) =>{
-        const router = useRouter();
-        return router.pathname === path
-    }
     
     const generateLeftNav = (): JSX.Element =>{
         return(
             <div className={styles.navigation}>
-                <Link href="/" data-active={isActive('/')}>
+                <Link href="/">
                     Github Repository Favorites
                 </Link>
             </div>

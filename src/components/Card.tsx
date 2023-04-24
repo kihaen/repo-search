@@ -13,10 +13,9 @@ type props = {
 }
 
 const CardComponent = (props : props) : JSX.Element=>{
-    const [isFavorited, disableFav] = useState(false);
     const {name, description, url, stars, callBack, showDelete} = props;
     return(
-        <Card minW={"-moz-fit-content"}>
+        <Card >
             <CardHeader>
             <Flex>
                 <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
@@ -29,16 +28,6 @@ const CardComponent = (props : props) : JSX.Element=>{
                         <TagLeftIcon as={StarIcon} />
                         <TagLabel>{stars || 0}</TagLabel>
                     </Tag>
-                    {!showDelete && (
-                        <>
-                        { !isFavorited ? <Button size="sm" onClick={()=>{callBack(); disableFav(true)}} >Favorite</Button> : 
-                            <Tag size={'lg'} variant='outline' colorScheme='green'>
-                                <TagLeftIcon as={StarIcon} />
-                                <TagLabel>{'Saved!'}</TagLabel>
-                            </Tag>
-                        }
-                        </>
-                    )}
                     {showDelete && 
                         <IconButton
                         colorScheme='red'
