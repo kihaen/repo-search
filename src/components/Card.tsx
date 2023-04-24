@@ -1,5 +1,4 @@
-import {useState} from 'react';
-import { Card, CardHeader, CardBody, Heading, Text, Button, HStack,Box, Flex, Tag, TagLabel, TagRightIcon, TagLeftIcon, IconButton} from "@chakra-ui/react";
+import { Card, CardHeader, CardBody, Heading, Text, HStack,Box, Flex, Tag, TagLabel, TagLeftIcon, IconButton} from "@chakra-ui/react";
 import { StarIcon, CloseIcon } from '@chakra-ui/icons';
 import Link from "next/link";
 

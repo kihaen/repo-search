@@ -6,8 +6,11 @@ This application interfaces with Githubs Rest API's to complete an autocomplete 
 
 First, it's important to note some of the assumptions being made here : 
 
+!! DO NOT USE CHROME -> chrome doesn't allow local resources to be shared.
+Instead use Safari if possible.
+
 Expected is a docker contaner instance `reposerver` to be available to port :8080 of the localhost/
-localhost is assumed to be 127.0.0.1
+localhost is assumed to be `127.0.0.1`
 available are these endpoints :
 
 #### Assumed available endpoints
@@ -33,6 +36,13 @@ to run tests:
 npm run test
 
 ```
+
+### Running the Application
+
+```
+$ docker run -p 3000:3000 kihaen/repo-search
+```
+the image is available via dockers repository as well.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

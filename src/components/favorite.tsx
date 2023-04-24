@@ -1,33 +1,20 @@
 import Layout from '@/components/Layout'
 import CardComponent from '@/components/Card'
-import { backendAPI } from '@/common/Constants'
 import { Stack, Menu, MenuButton,  Button,MenuList, MenuOptionGroup, MenuItemOption, MenuDivider, Text} from '@chakra-ui/react'
 import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
-
-export type LocalRepo = {
-  id : string,
-  fullName : string,
-  createdAt : string | Date,
-  stargazersCount : number,
-  language : string,
-  url : string
-}
-
-type responseData = {
-  repos? : Array<LocalRepo>
-}
+import {sortByStarcount, sortByDate} from '@/common/misc'
+import  {deleteFav} from '@/common/apiClient'
+import { ResponseLocalData, LocalRepo } from '@/common/Types'
 
 type props = {
-  data : responseData,
+  data : ResponseLocalData,
   invalidate : ()=>{},
 }
 
-
-//HOC for favorite context in an array
 const defaultSort ="asc"
 
-const favorite = (props : props)=> {
+const Favorite = (props : props)=> {
   const {data, invalidate} = props;
   const [dataArray, setDataArray] = useState<LocalRepo[]| undefined>([]);
   const [sortByOrder, setSortOrder] = useState<string | string[]>(defaultSort);
@@ -38,56 +25,24 @@ const favorite = (props : props)=> {
       setDataArray(data?.repos?.map((obj)=> ({...obj, createdAt : new Date(obj.createdAt)})))
     }
     else{ // This is to keep the sort order consistent even when data updates
-      handleSortSelect(sortByCategory, sortByOrder, data?.repos)
+      handleSortSelect(sortByCategory, sortByOrder, data?.repos!)
       setDataArray(data?.repos?.map((obj)=> ({...obj, createdAt : new Date(obj.createdAt)})))
     }
     
   },[data])
 
   const handleRemoveFavorite = async(id : string) =>{
-    try{
-        const response = await fetch(backendAPI + `/repo/${id}`, {
-            method : 'DELETE',
-        })
-        // removing favorite then callback to parent function to invalidate dataset causing refresh
-        invalidate()
-    }
-    catch(error){
-        console.log(error)
-    }
+    await deleteFav(id)
+    invalidate()
   }
 
-  const sortByStarcount = (direction : string | string[], data? : LocalRepo[]) =>{ // Data passthrough for when dataArray is not current
-    let sorted = data ?  data : dataArray;
-    if(direction === 'desc'){
-      sorted?.sort((a, b)=> ( (b.stargazersCount || 0) - (a.stargazersCount || 0)))
-    }
-    else{
-      sorted?.sort((a, b)=> ( (a.stargazersCount || 0) - (b.stargazersCount || 0)))
-    }
-    setDataArray(sorted)
-  }
-
-
-  const sortByDate = (direction : string | string[], data? : LocalRepo[]) =>{ //  Data passthrough for when dataArray is not current
-    let localArray  = data ?  data : dataArray;
-    if(direction === 'desc'){
-      localArray?.sort((a, b) => {return +b.createdAt - +a.createdAt})
-    }
-    else{
-      localArray?.sort((a, b) => {return +a.createdAt - +b.createdAt})
-    }
-    const final = localArray?.map(obj => { return { ...obj, createdAt: obj.createdAt} })
-    setDataArray(final)
-  }
-
-  const handleSortSelect = (category: string | string[], direction : string | string[], data? : LocalRepo[]) =>{
+  const handleSortSelect = (category: string | string[], direction : string | string[], data : LocalRepo[] | undefined) =>{
     switch(category){
         case 'created_at':
-          sortByDate(direction, data)
+          setDataArray(sortByDate(direction, data))
           return;
         case 'stargazers_count':
-          sortByStarcount(direction, data)
+          setDataArray(sortByStarcount(direction, data))
           return;
         default:
           return;
@@ -102,12 +57,12 @@ const favorite = (props : props)=> {
             Sort Favorite
           </MenuButton>
           <MenuList minWidth='240px'>
-            <MenuOptionGroup defaultValue={defaultSort} title='Order' type='radio' onChange={(value)=> {setSortOrder(value); handleSortSelect(sortByCategory, value)}}>
+            <MenuOptionGroup defaultValue={defaultSort} title='Order' type='radio' onChange={(value)=> {setSortOrder(value); handleSortSelect(sortByCategory, value, dataArray)}}>
               <MenuItemOption value='asc'>Ascending</MenuItemOption>
               <MenuItemOption value='desc'>Descending</MenuItemOption>
             </MenuOptionGroup>
             <MenuDivider />
-            <MenuOptionGroup title='Category' type='radio' value ={sortByCategory} onChange={(value)=>{setSortCategory(value); handleSortSelect(value, sortByOrder)}}>
+            <MenuOptionGroup title='Category' type='radio' value ={sortByCategory} onChange={(value)=>{setSortCategory(value); handleSortSelect(value, sortByOrder, dataArray)}}>
               <MenuItemOption value='stargazers_count'>Stargazers Count</MenuItemOption>
               <MenuItemOption value='created_at'>Created Date</MenuItemOption>
             </MenuOptionGroup>
@@ -134,4 +89,4 @@ const favorite = (props : props)=> {
   )
 }
 
-export default favorite;
+export default Favorite;
