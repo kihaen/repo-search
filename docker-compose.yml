@@ -6,7 +6,7 @@ services:
       target: runner
     volumes:
       - .:/repo-search
-    command: npm run dev && npm run dev:docker
+    command: npm run dev 
     ports:
       - "3000:3000"
     environment:
