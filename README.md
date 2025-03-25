@@ -6,9 +6,6 @@ This application interfaces with Githubs Rest API's to complete an autocomplete 
 
 First, it's important to note some of the assumptions being made here : 
 
-!! DO NOT USE CHROME -> chrome doesn't allow local resources to be shared.
-Instead use Safari if possible.
-
 Expected is a docker contaner instance `reposerver` to be available to port :8080 of the localhost/
 localhost is assumed to be `127.0.0.1`
 available are these endpoints :
